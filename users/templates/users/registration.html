@@ -8,36 +8,39 @@
                 <div class="row justify-content-center">
                     <div class="col-md-9 bg-white p-4 mb-5 mx-2 rounded custom-shadow">
                         <h2 class="text-center mb-4">Registration</h2>
-                        <form>
+                        <form action="{% url 'user:registration' %}" method="post">
+                            {% csrf_token %}
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="firstName" class="form-label">First name*</label>
-                                    <input type="text" class="form-control" id="firstName"
+                                    <label for="id_first_name" class="form-label">First name*</label>
+                                    <input type="text" class="form-control" id="id_first_name"
+                                           name="first_name"
                                            placeholder="Enter your first name" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="lastName" class="form-label">Last name*</label>
-                                    <input type="text" class="form-control" id="lastName"
+                                    <label for="id_last_name" class="form-label">Last name*</label>
+                                    <input type="text" class="form-control" id="id_last_name"
+                                           name="last_name"
                                            placeholder="Enter your last name" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="username" class="form-label">Username*</label>
-                                    <input type="text" class="form-control" id="username"
+                                    <label for="id_username" class="form-label">Username*</label>
+                                    <input type="text" name="username" class="form-control" id="id_username"
                                            placeholder="Enter your username" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label">Email*</label>
-                                    <input type="email" class="form-control" id="email"
+                                    <label for="id_email" class="form-label">Email*</label>
+                                    <input type="email" name = "email" class="form-control" id="id_email"
                                            placeholder="Enter your email" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="password1" class="form-label">Password*</label>
-                                    <input type="password" class="form-control" id="password1"
+                                    <label for="id_password1" class="form-label">Password*</label>
+                                    <input type="password" name="password1" class="form-control" id="id_password1"
                                            placeholder="Enter your password" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="password2" class="form-label">Confirm password*</label>
-                                    <input type="password" class="form-control" id="password2"
+                                    <label for="id_password2" class="form-label">Confirm password*</label>
+                                    <input type="password" name="password2" class="form-control" id="id_password2"
                                            placeholder="Confirm your password" required>
                                 </div>
                             </div>
