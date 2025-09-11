@@ -1,6 +1,10 @@
 
 {% extends "main/base.html" %}
 {% load static %}
+
+{% include "includes/cart_button.html" %}
+
+{% load carts_tags %}
 {% block content %}
     <div class="col-lg-10">
                     <!-- Page content -->
@@ -74,11 +78,13 @@
                                     </div>
                                 </div>
                                 <!-- Cart -->
+                            {% user_cart request  as carts %}
                                 <div class="col-md-7">
                                     <div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
                                         <h3 class="text-center mb-4">Cart</h3>
                                         <div class="container" id="cart-items-container">
                                             <!-- Cart layout -->
+                                             {% include "carts/includes/included_cart.html" %}
                                             <!-- End of cart layout -->
                                         </div>
                                         <a class="btn btn-dark" href="../orders/create_order.html">
