@@ -25,7 +25,7 @@ def catalog(request, category_slug=None):
     if order_by and order_by != "default":
         goods = goods.order_by(order_by)
 
-    current_page = Paginator(goods, 3).get_page(page)
+    current_page = Paginator(goods, 6).get_page(page)
     context = {"title": "Home - Catalog", "goods": current_page, "slug_url": category_slug}
     return render(request, "goods/catalog.html", context)
 
