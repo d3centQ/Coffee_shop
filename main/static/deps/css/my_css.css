@@ -15,7 +15,12 @@ body {
     display: flex;
     flex-direction: column;
 }
+.card-title{
 
+}
+.card-text{
+
+}
 .card-body {
     display: flex;
     flex-direction: column;

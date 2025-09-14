@@ -6,9 +6,6 @@ def index(request):
     context = {
         'title':'Home',
         'content':'Main page of the coffe shop - HOME',
-
-
-
     }
     return render(request,'main/index.html',context)
 def about(request):
