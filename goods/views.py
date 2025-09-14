@@ -29,15 +29,14 @@ def catalog(request, category_slug=None):
     context = {"title": "Home - Catalog", "goods": current_page, "slug_url": category_slug}
     return render(request, "goods/catalog.html", context)
 
+
 def search(request):
     page = request.GET.get('page', 1)
     q = (request.GET.get('query') or request.GET.get('q') or '').strip()
     goods = q_search(q)
     current_page = Paginator(goods, 3).get_page(page)
     ctx = {"title": "Search", "goods": current_page, "q": q, "slug_url": None}
-    #
     return render(request, "goods/catalog.html", ctx)
-
 
 
 def product(request, product_slug):

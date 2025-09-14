@@ -1,5 +1,5 @@
-{%load static  %}
-{%load goods_tags %}
+{% load static %}
+{% load goods_tags %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,51 +7,53 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static "deps/css/bootstrap/bootstrap.min.css "%}">
-    <link rel="stylesheet" href="{% static "deps/css/my_css.css "%}">
+    <link rel="stylesheet" href="{% static "deps/css/bootstrap/bootstrap.min.css " %}">
+    <link rel="stylesheet" href="{% static "deps/css/my_css.css " %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Favicons for different platforms -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static "deps/favicon/apple-touch-icon.png"%}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static "deps/favicon/favicon-32x32.png"%}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static "deps/favicon/favicon-16x16.png"%}">
-    <link rel="manifest" href="{% static "deps/favicon/site.webmanifest"%}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "deps/favicon/apple-touch-icon.png" %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "deps/favicon/favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "deps/favicon/favicon-16x16.png" %}">
+    <link rel="manifest" href="{% static "deps/favicon/site.webmanifest" %}">
     <title>Home</title>
     {% block css %}{% endblock %}
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-            <div class="container">
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<header>
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+        <div class="container">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{% url 'goods:index' 'all-stock' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link  text-white" href="{% url "main:about" %}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link  text-white" href="{% url "user:users_cart" %}">Cart</a>
+                    </li>
+                    {% if not user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'goods:index' 'all-stock' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link  text-white" href="{% url "main:about" %}">About Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link  text-white" href="{% url "user:users_cart" %}">Cart</a>
-                        </li>
-                        {% if not user.is_authenticated%}
-                             <li class="nav-item">
                             <a class="nav-link  text-white" href="{% url "user:login" %}">Login</a>
                         </li>
-                        {% else %}
-                              <li class="nav-item dropdown ">
+                    {% else %}
+                        <li class="nav-item dropdown ">
                             <a class="nav-link dropdown-toggle text-white" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
+                               data-bs-toggle="dropdown" aria-expanded="false">
                                 My Profile
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item  text-white" href="carts/cart.html">Cart</a></li>
-                                <li><a class="dropdown-item  text-white" href="{% url "user:profile" %}">Personal account</a>
+                                <li><a class="dropdown-item  text-white" href="{% url "user:profile" %}">Personal
+                                    account</a>
                                 </li>
                                 {% if user.is_admin or user.is_staff %}
-                                	    <li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Admin panel</a></li>
-                                {% endif %} 
+                                    <li><a class="dropdown-item  text-white" href="{% url "admin:index" %}">Admin
+                                        panel</a></li>
+                                {% endif %}
 
                                 <li>
                                     <hr class="dropdown-divider">
@@ -60,68 +62,70 @@
                             </ul>
                         </li>
 
-                        {% endif %}
+                    {% endif %}
 
 
-                    </ul>
-                    <form class="d-flex" role="search" action="{% url 'catalog:search' %}" method="get">
-                        <input class="form-control me-2" type="search" name="query" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success text-white" type="submit">Search</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <section>
-        <div class="container">
-            <!-- Catalog and cart with fixed position on the page >
-            <div class="row mt-1 position-fixed z-3">
-                <-- Coffee menu (Catalog) -->
-                <div class="dropdown mb-2">
-                    <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        Coffee Menu
-                        <img class="mx-1" src="{%static "deps/icons/grid-fill.svg"%}" alt="Menu Icon" width="16"
-                            height="16">
-                    </button>
-                    <ul class="dropdown-menu bg-dark" data-bs-theme="dark">
-                    {% tag_catagories as categories %}
-                        {% for category in categories %}
-                        <li><a class="dropdown-item text-white" href="{% url "catalog:index"  category.slug%}">{{ category.name}}</a></li>
-                          {% endfor %}
-                    </ul>
-                </div>
-                <!-- Cart icon that opens a modal window -->
-              {% block  modal_cart %}
-              	
-              {% endblock %}{}
-                <!-- End of modal window markup -->
+                </ul>
+                <form class="d-flex" role="search" action="{% url 'catalog:search' %}" method="get">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search"
+                           aria-label="Search">
+                    <button class="btn btn-outline-success text-white" type="submit">Search</button>
+                </form>
             </div>
         </div>
-        <!-- Page content -->
-        <div class="container">
-            <div class="row mt-1">
-                <div class="col-lg-2">
-                    <!-- Empty block, use for coffee shop promotions or menu later -->
-                </div>
-                <div class="col-lg-10">
-                    <!-- Main page content -->
+    </nav>
+</header>
+<section>
+    <div class="container">
+        <!-- Catalog and cart with fixed position on the page >
+        <div class="row mt-1 position-fixed z-3">
+            <-- Coffee menu (Catalog) -->
+        <div class="dropdown mb-2">
+            <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                Coffee Menu
+                <img class="mx-1" src="{% static "deps/icons/grid-fill.svg" %}" alt="Menu Icon" width="16"
+                     height="16">
+            </button>
+            <ul class="dropdown-menu bg-dark" data-bs-theme="dark">
+                {% tag_catagories as categories %}
+                {% for category in categories %}
+                    <li><a class="dropdown-item text-white"
+                           href="{% url "catalog:index"  category.slug %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- Cart icon that opens a modal window -->
+        {% block  modal_cart %}
+
+        {% endblock %}{}
+        <!-- End of modal window markup -->
+    </div>
+    </div>
+    <!-- Page content -->
+    <div class="container">
+        <div class="row mt-1">
+            <div class="col-lg-2">
+                <!-- Empty block, use for coffee shop promotions or menu later -->
+            </div>
+            <div class="col-lg-10">
+                <!-- Main page content -->
                 {% block content %}
-                    {% endblock  %}
-                </div>
+                {% endblock %}
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <script src="{%static "deps/js/jquery/jquery-3.7.0.min.js"%}"></script>
-    <script src="{%static "deps/js/jquery-events.js"%}"></script>
-    <script src=>"{%static "deps/js/jquery-ajax.js"%}"</script>
-    <script src="{%static "deps/js/bootstrap/bootstrap.bundle.min.js"%}"></script>
+<script src="{% static "deps/js/jquery/jquery-3.7.0.min.js" %}"></script>
+<script src="{% static "deps/js/jquery-events.js" %}"></script>
+<script src=>"{%static "deps/js/jquery-ajax.js"%}"</script>
+<script src="{% static "deps/js/bootstrap/bootstrap.bundle.min.js" %}"></script>
 </body>
 
 </html>
- <!--<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<!--<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                   data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                   aria-expanded="false" aria-label="Toggle navigation">
+                   <span class="navbar-toggler-icon"></span>
+               </button>
