@@ -15,7 +15,8 @@
                 Filters
             </button>
 
-            <form action="
+            <form id="filter-form" action="
+
                     {% if request.GET.q %}{% url "catalog:search" %}{% else %}{% url "catalog:index" slug_url %}{% endif %}"
                   method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
                 <div class="form-check text-white mx-3">
@@ -50,8 +51,19 @@
                         From most expensive to cheapest
                     </label>
                 </div>
-                <button type="submit" class="btn btn-primary mx-3 mt-3">Apply</button>
             </form>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const form = document.getElementById('filter-form');
+                    const inputs = form.querySelectorAll('input');
+
+                    inputs.forEach(input => {
+                        input.addEventListener('change', function () {
+                            form.submit();
+                        });
+                    });
+                });
+            </script>
         </div>
 
         {% if request.GET.q %}

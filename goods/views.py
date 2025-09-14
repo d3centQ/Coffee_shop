@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
-from goods.models import Products
+from goods.models import Products, Categories
 from goods.utils import q_search
 from django.http import Http404
 
@@ -11,14 +11,18 @@ def catalog(request, category_slug=None):
     order_by = request.GET.get('order_by')
     query = (request.GET.get('query') or '').strip()
 
-    if category_slug == "all-stock":
+
+    if category_slug == "all-stock" or category_slug is None:
         goods = Products.objects.all()
+        selected_category = Categories.objects.filter(slug="all-stock").first()
     elif query:
         goods = q_search(query) or Products.objects.none()
+        selected_category = None
     else:
         goods = Products.objects.filter(category__slug=category_slug)
         if not goods.exists():
             raise Http404()
+        selected_category = Categories.objects.filter(slug=category_slug).first()
 
     if on_sale:
         goods = goods.filter(discount__gt=0)
@@ -26,7 +30,17 @@ def catalog(request, category_slug=None):
         goods = goods.order_by(order_by)
 
     current_page = Paginator(goods, 6).get_page(page)
-    context = {"title": "Home - Catalog", "goods": current_page, "slug_url": category_slug}
+
+    all_categories = Categories.objects.all()
+
+    context = {
+        "title": "Home - Catalog",
+        "goods": current_page,
+        "slug_url": category_slug,
+        "selected_category": selected_category,
+        "categories": all_categories,
+    }
+
     return render(request, "goods/catalog.html", context)
 
 

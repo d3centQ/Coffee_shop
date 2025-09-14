@@ -83,12 +83,16 @@
         <div class="dropdown mb-2">
             <button class="btn btn-secondary dropdown-toggle btn-dark" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                Coffee Menu
+                {% if selected_category %}
+                    <span>{{ selected_category.name }}</span>
+                {% else %}
+                    <span>Select category</span>
+                {% endif %}
                 <img class="mx-1" src="{% static "deps/icons/grid-fill.svg" %}" alt="Menu Icon" width="16"
                      height="16">
             </button>
             <ul class="dropdown-menu bg-dark" data-bs-theme="dark">
-                {% tag_catagories as categories %}
+                {% tag_categories as categories %}
                 {% for category in categories %}
                     <li><a class="dropdown-item text-white"
                            href="{% url "catalog:index"  category.slug %}">{{ category.name }}</a></li>
@@ -125,7 +129,7 @@
 </body>
 
 </html>
-<!--<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+<!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                    aria-expanded="false" aria-label="Toggle navigation">
                    <span class="navbar-toggler-icon"></span>
