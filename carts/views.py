@@ -2,6 +2,9 @@ from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from carts.models import Cart
 from goods.models import Products
+from carts.utils import get_user_carts
+from django.template.loader import render_to_string
+
 
 # Create your views here.
 def cart_add(request,product_slug):
@@ -15,7 +18,31 @@ def cart_add(request,product_slug):
                 cart.save()
         else:
             Cart.objects.create(user=request.user,product=product,quantity=1)
+    else:
+        carts=Cart.objects.filter(
+            session_key=request.session.session_key,product=product)
+        if carts.exists():
+            cart=carts.first()
+            if cart:
+                cart.quantity = cart.quantity + 1
+                cart.save()
+        else:
+            Cart.objects.create(session_key=request.session.session_key ,product=product,quantity=1)
+
+
+
+
+
+
+
+
+
+
+
+
+
     return redirect(request.META['HTTP_REFERER'])
+
 
 @login_required(login_url='user:login')
 def cart_change(request, cart_id):
