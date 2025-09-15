@@ -11,26 +11,26 @@ def catalog(request, category_slug=None):
     order_by = request.GET.get('order_by')
     query = (request.GET.get('query') or '').strip()
 
-
-    if category_slug == "all-stock" or category_slug is None:
-        goods = Products.objects.all()
-        selected_category = Categories.objects.filter(slug="all-stock").first()
-    elif query:
+    # SEARCH has priority
+    if query:
         goods = q_search(query) or Products.objects.none()
         selected_category = None
+    elif category_slug == "all-stock" or category_slug is None:
+        goods = Products.objects.all()
+        selected_category = Categories.objects.filter(slug="all-stock").first()
     else:
         goods = Products.objects.filter(category__slug=category_slug)
         if not goods.exists():
             raise Http404()
         selected_category = Categories.objects.filter(slug=category_slug).first()
 
-    if on_sale:
+    # Filters
+    if on_sale == 'on':
         goods = goods.filter(discount__gt=0)
     if order_by and order_by != "default":
         goods = goods.order_by(order_by)
 
     current_page = Paginator(goods, 6).get_page(page)
-
     all_categories = Categories.objects.all()
 
     context = {
@@ -39,6 +39,7 @@ def catalog(request, category_slug=None):
         "slug_url": category_slug,
         "selected_category": selected_category,
         "categories": all_categories,
+        "q": query,  # pass search query to template
     }
 
     return render(request, "goods/catalog.html", context)

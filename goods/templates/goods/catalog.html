@@ -15,20 +15,18 @@
                 Filters
             </button>
 
-            <form id="filter-form" action="
-
-                    {% if request.GET.q %}{% url "catalog:search" %}{% else %}{% url "catalog:index" slug_url %}{% endif %}"
-                  method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
+            <form id="filter-form" action="" method="get" class="dropdown-menu bg-dark" data-bs-theme="dark">
+                {% if q %}
+                    <input type="hidden" name="query" value="{{ q }}">
+                {% endif %}
                 <div class="form-check text-white mx-3">
                     <input class="form-check-input" type="checkbox" name="on_sale" id="flexCheckDefault" value="on"
                            {% if request.GET.on_sale == 'on' %}checked{% endif %}>
-                    {% if request.GET.q %}
-                        <input type="hidden" name="q" value="{{ request.GET.q }}">
-                    {% endif %}
                     <label class="form-check-label" for="flexCheckDefault">
                         Discounted products
                     </label>
                 </div>
+
                 <p class="text-white mx-3 mt-3">Sort by:</p>
                 <div class="form-check text-white mx-3">
                     <input class="form-check-input" type="radio" name="order_by" id="flexRadioDefault1" value="default"
@@ -52,6 +50,7 @@
                     </label>
                 </div>
             </form>
+
             <script>
                 document.addEventListener('DOMContentLoaded', function () {
                     const form = document.getElementById('filter-form');
@@ -66,13 +65,8 @@
             </script>
         </div>
 
-        {% if request.GET.q %}
-            <h3 class="mt-4">Search results for {{ request.GET.q }}</h3>
-            {% if not goods %}
 
-                <h2 class="mt-4">Nothing found for your search</h2>
-            {% endif %}
-        {% endif %}
+
         {% for product in goods %}
             <!-- Product card -->
             <div class="col-lg-4 col-md-6 p-4 d-flex">
