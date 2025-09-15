@@ -10,14 +10,14 @@
     <link rel="stylesheet" href="{% static "deps/css/bootstrap/bootstrap.min.css " %}">
     <link rel="stylesheet" href="{% static "deps/css/my_css.css " %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="{% static 'deps/css/about.css' %}">
     <!-- Favicons for different platforms -->
     <link rel="apple-touch-icon" sizes="180x180" href="{% static "deps/favicon/apple-touch-icon.png" %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "deps/favicon/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "deps/favicon/favicon-16x16.png" %}">
     <link rel="manifest" href="{% static "deps/favicon/site.webmanifest" %}">
     <title>Home</title>
-    {% block css %}{% endblock %}
+
 </head>
 
 <body>
@@ -31,9 +31,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link  text-white" href="{% url "main:about" %}">About Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link  text-white" href="{% url "user:users_cart" %}">Cart</a>
                     </li>
                     {% if not user.is_authenticated %}
                         <li class="nav-item">
@@ -102,7 +99,7 @@
         <!-- Cart icon that opens a modal window -->
         {% block  modal_cart %}
 
-        {% endblock %}{}
+        {% endblock %}
         <!-- End of modal window markup -->
     </div>
     </div>
@@ -114,6 +111,7 @@
             </div>
             <div class="col-lg-10">
                 <!-- Main page content -->
+
                 {% block content %}
                 {% endblock %}
             </div>
