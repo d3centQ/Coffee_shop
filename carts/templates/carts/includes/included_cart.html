@@ -11,20 +11,18 @@
                 <div class="row text-center">
                     <div class="col p-0">
                         <div class="input-group">
-                                                            <span class="input-group-btn">
-                                                                <button type="button"
-                                                                        class="btn btn-dark btn-sm decrement"
-                                                                        data-cart-id=""
-                                                                        data-cart-change-url="">-</button>
+                            <span class="input-group-btn">
+                              <button type="button"
+        class="btn btn-dark btn-sm cart-change-go"
+        data-url="{% url 'carts:cart_change' cart.id %}?action=dec">−</button>
                                                             </span>
                             <input type="text" class="form-control number" value="{{ cart.quantity }}"
                                    readonly>
                             <span class="input-group-btn">
-                                                                <button type="button"
-                                                                        class="btn btn-dark btn-sm increment"
-                                                                        data-cart-id=""
-                                                                        data-cart-change-url="">+</button>
-                                                            </span>
+                                <button type="button"
+        class="btn btn-dark btn-sm cart-change-go"
+        data-url="{% url 'carts:cart_change' cart.id %}?action=inc">+</button>
+                            </span>
                         </div>
                     </div>
                     <div class="col p-0">
@@ -32,7 +30,7 @@
                     </div>
                     <div class="col p-0"><strong>{{ cart.products_price }} $</strong></div>
                     <div class="col p-0">
-                        <a href="{% url "cart:cart_remove" 1 %}" class="remove-from-cart" data-cart-id="">
+                        <a href="{% url "cart:cart_remove"  %}" class="remove-from-cart" data-cart-id="">
                             <img src="{% static 'deps/icons/trash3-fill.svg' %}">
                         </a>
                     </div>
