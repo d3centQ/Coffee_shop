@@ -1,10 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from carts.models import Cart
 from goods.models import Products
-from django.shortcuts import redirect,get_object_or_404
-from django.db.models import F
-
 
 # Create your views here.
 def cart_add(request,product_slug):
@@ -20,29 +17,22 @@ def cart_add(request,product_slug):
             Cart.objects.create(user=request.user,product=product,quantity=1)
     return redirect(request.META['HTTP_REFERER'])
 
+@login_required(login_url='user:login')
 def cart_change(request, cart_id):
+    action = request.GET.get("action")
     cart = get_object_or_404(Cart, id=cart_id, user=request.user)
 
-    action = request.GET.get('action')  # 'inc' | 'dec'
-    if action == 'inc':
-        cart.quantity = F('quantity') + 1
-        cart.save(update_fields=['quantity'])
-    elif action == 'dec':
+    if action == "inc":
+        cart.quantity += 1
+        cart.save()
+    elif action == "dec":
         if cart.quantity > 1:
-            cart.quantity = F('quantity') - 1
-            cart.save(update_fields=['quantity'])
+            cart.quantity -= 1
+            cart.save()
         else:
-            # если уже 1 — удалим позицию
             cart.delete()
-            return redirect(request.META.get('HTTP_REFERER', 'main:index'))
 
-    # после F() — обновим значение в объекте
-    try:
-        cart.refresh_from_db(fields=['quantity'])
-    except Exception:
-        pass
-
-    return redirect(request.META.get('HTTP_REFERER', 'main:index'))
+    return redirect(request.META.get("HTTP_REFERER", "main:index"))
 
 def cart_remove(request, product_slug):
     product = get_object_or_404(Products, slug=product_slug)

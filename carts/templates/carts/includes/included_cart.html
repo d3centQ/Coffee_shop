@@ -1,8 +1,7 @@
 {% load static %}
 
-
 <div class="card mb-3 text-bg-light shadow-lg">
-    {% for cart  in carts %}
+    {% for cart in carts %}
         <div class="card-header">
             <h5 class="card-title">{{ cart.product.name }}</h5>
         </div>
@@ -11,37 +10,37 @@
                 <div class="row text-center">
                     <div class="col p-0">
                         <div class="input-group">
-                                                            <span class="input-group-btn">
-                                                                <button type="button"
-                                                                        class="btn btn-dark btn-sm decrement"
-                                                                        data-cart-id=""
-                                                                        data-cart-change-url="">-</button>
-                                                            </span>
-                            <input type="text" class="form-control number" value="{{ cart.quantity }}"
-                                   readonly>
                             <span class="input-group-btn">
-                                                                <button type="button"
-                                                                        class="btn btn-dark btn-sm increment"
-                                                                        data-cart-id=""
-                                                                        data-cart-change-url="">+</button>
-                                                            </span>
+                                <a href="{% url 'cart:cart_change' cart.id %}?action=dec"
+                                   class="btn btn-dark btn-sm">-</a>
+                            </span>
+
+                            <input type="text" class="form-control number"
+                                   value="{{ cart.quantity }}" readonly>
+
+                            <span class="input-group-btn">
+                                <a href="{% url 'cart:cart_change' cart.id %}?action=inc"
+                                   class="btn btn-dark btn-sm">+</a>
+                            </span>
                         </div>
                     </div>
+
                     <div class="col p-0">
                         <p>x {{ cart.product.sell_price }} = </p>
                     </div>
+
                     <div class="col p-0"><strong>{{ cart.products_price }} $</strong></div>
+
                     <div class="col p-0">
-                        <a href="{% url "cart:cart_remove" cart.product.slug %}" class="remove-from-cart" data-cart-id="">
-                            <img src="{% static 'deps/icons/trash3-fill.svg' %}">
+                        <a href="{% url 'cart:cart_remove' cart.product.slug %}"
+                           class="remove-from-cart">
+                            <img src="{% static 'deps/icons/trash3-fill.svg' %}" alt="remove">
                         </a>
                     </div>
                 </div>
             </li>
         </ul>
-
     {% endfor %}
-
 </div>
 <div class="card mb-3 shadow-lg">
     <div class="card-footer">
