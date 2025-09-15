@@ -21,5 +21,7 @@ def cart_add(request,product_slug):
 
 def cart_change(request,product_slug):
     ...
-def cart_remove(request,product_slug):
-    ...
+
+def cart_remove(request, cart_id):
+    Cart.objects.filter(id=cart_id, user=request.user).delete()
+    return redirect(request.META.get('HTTP_REFERER', 'main:index'))
