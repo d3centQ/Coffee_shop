@@ -26,9 +26,9 @@
 
                                     <!-- End of coffee cart content -->
                                 </div>
-                                <a class="btn btn-dark" href="orders/create_order.html">
-                                    Place order
-                                </a>
+                                {% if carts %}
+                <a class="btn btn-dark" href="{% url "orders:create_order" %}">Place order</a>
+                  {% endif%}
                             </div>
                         </div>
                     </div>
