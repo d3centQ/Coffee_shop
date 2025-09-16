@@ -1,5 +1,82 @@
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.core.exceptions import ValidationError
+from django.contrib import messages
+from django.shortcuts import redirect, render
 
-# Create your views here.
+from carts.models import Cart
+from .models import Order, OrderItem
+from .forms import CreateOrderForm
+
+
+@login_required
 def create_order(request):
-    return render(request, 'orders/create_order.html')
+    if request.method == 'POST':
+        form = CreateOrderForm(data=request.POST)
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    user = request.user
+                    cart_items = Cart.objects.filter(user=user)
+
+                    if not cart_items.exists():
+                        messages.error(request, 'Your cart is empty.')
+                        return redirect('users_cart')
+
+
+                    requires_delivery = form.cleaned_data['requires_delivery'] in ('1', 1, True, 'True')
+                    payment_on_get = form.cleaned_data['payment_on_get'] in ('1', 1, True, 'True')
+
+                    # Create order
+                    order = Order.objects.create(
+                        user=user,
+                        phone_number=form.cleaned_data['phone_number'],
+                        requires_delivery=requires_delivery,
+                        delivery_address=form.cleaned_data['delivery_address'],
+                        payment_on_get=payment_on_get,
+                    )
+
+                    # Create order items
+                    for cart_item in cart_items:
+                        product = cart_item.product
+                        name = product.name
+                        price = product.sell_price()
+                        quantity = cart_item.quantity
+
+                        if product.quantity < quantity:
+                            raise ValidationError(
+                                f'Insufficient stock for "{name}". In stock: {product.quantity}'
+                            )
+
+                        OrderItem.objects.create(
+                            order=order,
+                            product=product,
+                            name=name,
+                            price=price,
+                            quantity=quantity,
+                        )
+
+                        product.quantity -= quantity
+                        product.save()
+
+                    # Clear user's cart
+                    cart_items.delete()
+
+                    messages.success(request, 'Order has been placed!')
+                    return redirect('user:profile')
+            except ValidationError as e:
+                messages.error(request, str(e))
+                return redirect('orders:create_order')
+    else:
+        initial = {
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+        }
+        form = CreateOrderForm(initial=initial)
+
+    context = {
+        'title': 'Home - Checkout',
+        'form': form,
+        'order': True,
+    }
+    return render(request, 'orders/create_order.html', context=context)

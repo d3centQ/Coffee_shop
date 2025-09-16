@@ -61,21 +61,32 @@ def registration(request):
     if request.method == 'POST':
         form = UserRegistrationForm(data=request.POST)
         if form.is_valid():
-            form.save()
-            user=form.instance
-            auth.login(request,user)
-            messages.success(request, f"{user.username},You have been registrated and successfully logged in")
-            return HttpResponseRedirect(reverse('main:index'))
+            user = form.save()
+
+            if not request.session.session_key:
+                request.session.save()
+            session_key = request.session.session_key
+
+            auth.login(request, user)
+
+            if session_key:
+                Cart.objects.filter(session_key=session_key).update(user=user)
+
+            messages.success(request, f"{user.username}, you have been registered and logged in")
+            return redirect('main:index')
+        else:
+            messages.error(request, "Please correct the errors below.")
     else:
         form = UserRegistrationForm()
-    context = {
-        'title':'Home-Registration',
+
+    return render(request, 'users/registration.html', {
+        'title': 'Home - Registration',
         'form': form,
-        'messages':messages,
+    })
 
-    }
-    return render(request,'users/registration.html',context)
 
+def users_cart(request):
+    return render(request, 'users/users_cart.html')
 def users_cart(request):
     return render(request,'users/users_cart.html')
 
